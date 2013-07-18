@@ -7,46 +7,46 @@ from Tkinter import N, E, S, W, ALL, BOTH
 
 class App(object):
     """ docstring """
-    def __init__(self, width=750, height=500, name='App', bgColor = '#000000'):
+    def __init__(self, width=750, height=500, name='App', bg_color = '#000000'):
         (self.width, self.height) = width, height
         self.name = name
         
         self.clock = 0
         self.dragging = False
-        self.dragVal = (0,0)
-        self.prevMouse = (0,0)
-        self.bgColor = bgColor
+        self.drag_val = (0,0)
+        self.prev_mouse = (0,0)
+        self.bg_color = bgColor
 
-        self.createWindow()
-        self.bindEvents()
-        self.initWrapper()
-        self.timerWrapper()
+        self.create_window()
+        self.bind_events()
+        self.init_wrapper()
+        self.timer_wrapper()
         
         self.root.mainloop()
         
-    def createWindow(self):
+    def create_window(self):
         self.root = Tkinter.Tk()
         self.root.title(self.name)
         self.canvas = Tkinter.Canvas(self.root, width=self.width,
-                                     height=self.height, background=self.bgColor)
+                                     height=self.height, background=self.bg_color)
         self.canvas.pack(expand=True, fill=BOTH)
         
-    def unbindAll(self):
+    def unbind_all(self):
         for event, tag in self.bindings:
             self.root.unbind(event, tag)
         self.bindings = [ ]
         
     def quit(self):
-        self.unbindAll()
+        self.unbind_all()
         self.canvas.after_cancel(self.after)
         self.root.quit()
         
-    def bindEvents(self):
-        self.bindings = [ ('<Button-1>', self.mousePressedWrapper),
-            ('<KeyPress>', self.keyPressedWrapper),
-            ('<KeyRelease>', self.keyReleasedWrapper),
-            ('<ButtonRelease-1>', self.mousePressedWrapper),
-            ('<B1-Motion>', self.mouseMovedWrapper),
+    def bind_events(self):
+        self.bindings = [ ('<Button-1>', self.mouse_pressed_wrapper),
+            ('<KeyPress>', self.key_pressed_wrapper),
+            ('<KeyRelease>', self.key_released_wrapper),
+            ('<ButtonRelease-1>', self.mouse_pressed_wrapper),
+            ('<B1-Motion>', self.mouse_moved_wrapper),
         ]
         
         for i in xrange(len(self.bindings)):
@@ -55,61 +55,61 @@ class App(object):
             # Store the binding as the event name and the Tkinter tag
             self.bindings[i] = (event, self.root.bind(event, fn))
             
-    def initWrapper(self):
+    def init_wrapper(self):
         self.delay = 20
         self.init()
     def init(self): pass
     
-    def timerFired(self): pass
-    def timerWrapper(self):
-        self.redrawAllWrapper()
-        self.timerFired()
+    def timer_fired(self): pass
+    def timer_wrapper(self):
+        self.redraw_all_wrapper()
+        self.timer_fired()
         self.clock += 1
-        self.after = self.canvas.after(self.delay, lambda: self.timerWrapper())
+        self.after = self.canvas.after(self.delay, lambda: self.timer_wrapper())
     
-    def redrawAll(self): pass
-    def redrawAllWrapper(self):
-        self.redrawAll()
+    def redraw_all(self): pass
+    def redraw_all_wrapper(self):
+        self.redraw_all()
 
-    def keyPressed(self, event): pass        
-    def keyPressedWrapper(self, event):
+    def key_pressed(self, event): pass        
+    def key_pressed_wrapper(self, event):
         if event.keysym == 'Escape':
             if hasattr(self, 'cube'):
-                if self.cube.helpState != self.cube.INGAME:
-                    self.cube.helpState = self.cube.INGAME
+                if self.cube.help_state != self.cube.INGAME:
+                    self.cube.help_state = self.cube.INGAME
                     self.cube.redraw()
                     return
             self.quit()
         else:
-            self.keyPressed(event)
+            self.key_pressed(event)
             if hasattr(self, 'inCam'):
-                if self.inCam:
+                if self.in_cam:
                     print event.keysym
-            self.redrawAllWrapper()
+            self.redraw_all_wrapper()
 
-    def keyReleased(self, event): pass
-    def keyReleasedWrapper(self, event):
-        self.keyReleased(event)
-        self.redrawAllWrapper()
+    def key_released(self, event): pass
+    def key_released_wrapper(self, event):
+        self.key_released(event)
+        self.redraw_all_wrapper()
         
-    def mousePressed(self, event): pass
-    def mousePressedWrapper(self, event):
+    def mouse_pressed(self, event): pass
+    def mouse_pressed_wrapper(self, event):
         self.dragging = True
         #self.dragVal = (0,0)
-        self.prevMouse = (event.x, event.y)
-        self.mousePressed(event)
+        self.prev_mouse = (event.x, event.y)
+        self.mouse_pressed(event)
 
-    def mouseMoved(self, event): pass
-    def mouseMovedWrapper(self, event):
-        ndx = self.dragVal[0] if abs(self.dragVal[0]) > abs(event.x-self.prevMouse[0]) else (event.x-self.prevMouse[0])
-        ndy = self.dragVal[1] if abs(self.dragVal[1]) > abs(event.y-self.prevMouse[1]) else (event.y-self.prevMouse[1])
-        self.dragVal = (ndx, ndy)
-        self.prevMouse = (event.x, event.y)
-        self.mouseMoved(event)
+    def mouse_moved(self, event): pass
+    def mouse_moved_wrapper(self, event):
+        ndx = self.drag_val[0] if abs(self.drag_val[0]) > abs(event.x-self.prev_mouse[0]) else (event.x-self.prev_mouse[0])
+        ndy = self.drag_val[1] if abs(self.drag_val[1]) > abs(event.y-self.prev_mouse[1]) else (event.y-self.prev_mouse[1])
+        self.drag_val = (ndx, ndy)
+        self.prev_mouse = (event.x, event.y)
+        self.mouse_moved(event)
 
-    def mouseReleased(self, event): pass
-    def mouseReleasedWrapper(self, event):
-        self.mouseReleased(event)
+    def mouse_released(self, event): pass
+    def mouse_released_wrapper(self, event):
+        self.mouse_released(event)
         self.dragging = False
 
     def __str__(self):
